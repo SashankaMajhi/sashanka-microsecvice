@@ -1,0 +1,628 @@
+JAVA OOP (OBJECT ORIENTED PROGRAMMING LANGUAGE)
+
+OOP has Four main topics:
+1. INHERITANCE
+2. POLYMORPHISM
+3. ENCAPSULATION
+4. ABSTRACTION
+
+---------------------------------------------------------
+Before going to OOP we go through some basics:
+
+Class:
+- A class is a blueprint to create objects and methods/variables.
+- Class name should start with a capital letter and use the 'class' keyword.
+
+Example:
+class Car {
+    String model;
+    int year;
+    void drive() {
+        System.out.println("Car is driving...");
+    }
+}
+
+Object:
+- Object can be created using three ways:
+1) Using 'new' keyword:
+   Car car1 = new Car();
+2) Using newInstance():
+   Car car2 = Car.class.newInstance();
+3) Using clone():
+   Car car3 = (Car) car1.clone();
+
+---------------------------------------------------------
+1. INHERITANCE:
+- A class that takes or inherits properties and methods of a superclass (parent class).
+- Achieved using 'extends' keyword.
+
+Types:
+1) Single Inheritance
+
+class Animal {
+    void eat() {
+        System.out.println("Animal eats food");
+    }
+}
+
+class Dog extends Animal {
+    void bark() {
+        System.out.println("Dog barks");
+    }
+}
+
+public class SingleInheritanceDemo {
+    public static void main(String[] args) {
+        Dog d = new Dog();
+        d.eat();  // from Animal
+        d.bark(); // from Dog
+    }
+}
+
+2) Multilevel Inheritance
+class Vehicle {
+    void start() {
+        System.out.println("Vehicle starts");
+    }
+}
+
+class Car extends Vehicle {
+    void wheels() {
+        System.out.println("Car has 4 wheels");
+    }
+}
+
+class ElectricCar extends Car {
+    void charge() {
+        System.out.println("Electric car charges with battery");
+    }
+}
+
+public class MultilevelInheritanceDemo {
+    public static void main(String[] args) {
+        ElectricCar e = new ElectricCar();
+        e.start();   // from Vehicle
+        e.wheels();  // from Car
+        e.charge();  // from ElectricCar
+    }
+}
+
+3) Hierarchical Inheritance
+class Shape {
+    void draw() {
+        System.out.println("Drawing shape");
+    }
+}
+
+class Circle extends Shape {
+    void radius() {
+        System.out.println("Circle has a radius");
+    }
+}
+
+class Rectangle extends Shape {
+    void sides() {
+        System.out.println("Rectangle has 4 sides");
+    }
+}
+
+public class HierarchicalInheritanceDemo {
+    public static void main(String[] args) {
+        Circle c = new Circle();
+        c.draw();
+        c.radius();
+
+        Rectangle r = new Rectangle();
+        r.draw();
+        r.sides();
+    }
+}
+
+- Multiple inheritance is not supported in Java with classes, but can be achieved with Interfaces.
+(Classes cannot extend multiple classes, but they can implement multiple interfaces.)
+
+
+Example:
+class Parent {
+    void display() {
+        System.out.println("Parent class method");
+    }
+}
+class Child extends Parent {
+    void show() {
+        System.out.println("Child class method");
+    }
+}
+
+---------------------------------------------------------
+2. POLYMORPHISM:
+- Single method, many forms.
+
+Types:
+1) Compile-time Polymorphism (Method Overloading)
+   - Same method name but different parameters.
+2) Runtime Polymorphism (Method Overriding)
+   - Same method name, same parameters, redefined in subclass with @Override.
+
+Example Overloading:
+class Calculator {
+    int add(int a, int b) { return a+b; }
+    double add(double a, double b) { return a+b; }
+}
+
+Example Overriding:
+class Animal {
+    void sound() { System.out.println("Animal makes sound"); }
+}
+class Dog extends Animal {
+    @Override
+    void sound() { System.out.println("Dog barks"); }
+}
+
+
+2️⃣ Static methods
+
+Cannot be truly overridden, but they can be hidden (method hiding).
+
+Method hiding means:
+
+Parent’s static method belongs to the class, not the object.
+
+Child’s static method with the same signature hides the parent’s method.
+
+Binding is compile-time (not runtime like overriding).
+
+✅ Example:
+
+class Parent {
+    private void showPrivate() {
+        System.out.println("Parent private method");
+    }
+    static void showStatic() {
+        System.out.println("Parent static method");
+    }
+}
+
+class Child extends Parent {
+    // Not an override, just a new method
+    private void showPrivate() {
+        System.out.println("Child private method");
+    }
+
+    // Method hiding, not overriding
+    static void showStatic() {
+        System.out.println("Child static method");
+    }
+}
+
+public class Test {
+    public static void main(String[] args) {
+        Parent p = new Child();
+        p.showStatic(); // Output: Parent static method (static binding) static methods resolve at compile time so reffrence is checked it is parent so parent class
+method called.
+        
+        Child.showStatic(); // Output: Child static methodbecause called by class name
+    }
+}
+
+
+Dynamic Method Dispatch (DMD)
+
+It’s the process of resolving method calls at runtime, not compile-time.
+
+Happens when a parent class reference points to a child class object.
+
+The method that gets executed depends on the actual object type (child), not the reference type (parent).
+
+This is the backbone of runtime polymorphism in Java.
+
+class Animal {
+    void sound() {
+        System.out.println("Animal makes a sound");
+    }
+}
+
+class Dog extends Animal {
+    @Override
+    void sound() {
+        System.out.println("Dog barks");
+    }
+}
+
+class Cat extends Animal {
+    @Override
+    void sound() {
+        System.out.println("Cat meows");
+    }
+}
+
+public class Test {
+    public static void main(String[] args) {
+        Animal a; // parent reference
+
+        a = new Dog(); // parent ref → child obj
+        a.sound();     // Output: Dog barks (decided at runtime)
+
+        a = new Cat(); // parent ref → child obj
+        a.sound();     // Output: Cat meows (decided at runtime)
+    }
+}
+
+---------------------------------------------------------
+3. ENCAPSULATION:
+- Wrapping the data (variables) and methods into a single class.
+- Restricting direct access to fields by making them private and providing public getter/setter.
+
+Example:
+class Student {
+    private String name;
+    public String getName() { return name; }
+    public void setName(String name) { this.name = name; }
+}
+
+---------------------------------------------------------
+4. ABSTRACTION:
+- Hiding internal details and showing only necessary functionality.
+- Achieved using abstract classes and interfaces.
+
+Abstract Class Example:
+abstract class Shape {
+    abstract void draw();
+}
+class Circle extends Shape {
+    void draw() { System.out.println("Drawing Circle"); }
+}
+
+Interface Example:
+interface Vehicle {
+    void drive();
+}
+class Car implements Vehicle {
+    public void drive() { System.out.println("Car is driving"); }
+}
+
+
+
+Yes, abstract classes can have constructors.
+
+📌 Why?
+
+An abstract class can have both abstract methods (no body) and concrete methods (with body).
+
+It may also contain fields (instance variables) that need initialization.
+
+When a child class is instantiated, the abstract class constructor runs first (through super()), ensuring that the parent part of the object is properly initialized.
+
+✅ Example:
+
+abstract class Vehicle {
+    String brand;
+
+    // Constructor in abstract class
+    Vehicle(String brand) {
+        this.brand = brand;
+        System.out.println("Vehicle constructor called");
+    }
+
+    abstract void drive();
+}
+
+class Car extends Vehicle {
+    Car(String brand) {
+        super(brand); // calls abstract class constructor
+        System.out.println("Car constructor called");
+    }
+
+    @Override
+    void drive() {
+        System.out.println(brand + " is driving...");
+    }
+}
+
+public class Test {
+    public static void main(String[] args) {
+        Vehicle v = new Car("Tesla"); 
+        v.drive();
+    }
+}
+
+🔹 Interface (Java 8+)
+
+By default, methods are abstract (no body), but Java 8+ allows:
+
+Default methods (with body, can be overridden).
+
+Static methods (with body, not overridden, called with interface name).
+
+Can only have public static final variables (constants).
+
+Cannot have constructors.
+
+A class can implement multiple interfaces (multiple inheritance).
+
+✅ Example:
+
+interface Vehicle {
+    void drive(); // abstract method
+
+    default void start() { // default method
+        System.out.println("Vehicle is starting...");
+    }
+
+    static void info() { // static method
+        System.out.println("Vehicle interface static method");
+    }
+}
+
+When to use which?
+
+Abstract class → When you need shared state (fields + constructors) and a base implementation for subclasses.
+
+Interface → When you need to define a contract that can be applied to unrelated classes (e.g., Comparable, Serializable).
+
+---------------------------------------------------------
+Constructors
+
+A constructor is a special method used to initialize objects.
+
+Called automatically when an object is created using new.
+
+Name must be the same as class name, and has no return type.
+
+Types of Constructors:
+
+Default Constructor (provided by compiler if not written).
+
+Parameterized Constructor (accepts arguments).
+
+class Person {
+    String name;
+    int age;
+
+    Person(String name, int age) {  // Parameterized constructor
+        this.name = name;
+        this.age = age;
+    }
+}
+
+
+this() -> used to call current class constructor.
+super() -> used to call parent class constructor.
+
+Constructor Chaining:
+class A {
+    A() { System.out.println("A's constructor"); }
+}
+class B extends A {
+    B() {
+        super(); // Calls parent class constructor
+        System.out.println("B's constructor");
+    }
+}
+
+---------------------------------------------------------
+ADVANCED OOP TOPICS:
+
+1) FINAL Keyword:
+- final variable -> value cannot be changed.
+- final method -> cannot be overridden.
+- final class -> cannot be inherited.
+
+2) STATIC Keyword:
+
+- static methods -> called without object.
+
+🧩 2️⃣ Static Method
+
+✅ Can be called without creating an object.
+✅ Can access only static variables (not instance variables directly).
+✅ Commonly used for utility or helper methods.
+
+
+public class MathUtil {
+
+    static int square(int n) {
+        return n * n;
+    }
+
+    public static void main(String[] args) {
+        System.out.println("Square: " + MathUtil.square(5));
+    }
+}
+
+⚡ static Keyword in Java
+
+The static keyword in Java is used for class-level members — meaning they belong to the class itself, shared among all objects instead of each object having its own copy.
+
+- static variables -> shared across all objects.
+
+public class Employee {
+    static String company = "TCS"; // static variable
+    String name; // instance variable
+
+    Employee(String name) {
+        this.name = name;
+    }
+
+    void display() {
+        System.out.println(name + " works at " + company);
+    }
+
+    public static void main(String[] args) {
+        Employee e1 = new Employee("Shashi");
+        Employee e2 = new Employee("Reddy");
+
+        e1.display();
+        e2.display();
+
+        // Changing static variable affects all objects
+        Employee.company = "Infosys";
+        e1.display();
+        e2.display();
+    }
+}
+
+🧩 3️⃣ Static Block
+
+✅ Used for initializing static data before any object is created or before main() executes.
+✅ Executes only once when the class is loaded.
+
+public class StaticBlockDemo {
+    static int x;
+
+    static {
+        System.out.println("Static block executed!");
+        x = 100;
+    }
+
+    public static void main(String[] args) {
+        System.out.println("Main executed!");
+        System.out.println("x = " + x);
+    }
+}
+
+
+
+3) 'this' Keyword:
+- Refers to current class object.
+- Used to differentiate between instance variable and parameter.
+
+4) 'super' Keyword:
+- Refers to parent class object.
+- Used to access parent variables/methods/constructors.
+
+5) Method Overriding vs Method Hiding:
+- Overriding works with instance methods (runtime polymorphism).
+- Hiding works with static methods.
+
+
+Learn these in deep while preparing interview dont forget shashi reddy
+
+
+6) instanceof Operator:
+- Used to check if an object is an instance of a class.
+
+7) Type Casting in OOP:
+- Upcasting: Parent p = new Child();
+- Downcasting: Child c = (Child) p;
+
+Upcasting → Converting a child object into a parent type reference. (Always safe)
+
+Downcasting → Converting a parent reference (that is pointing to a child object) back into a child type. (Needs explicit cast, may cause ClassCastException if not valid).
+
+🔹 Example with Animal and Dog
+class Animal {
+    void sound() {
+        System.out.println("Animal makes a sound");
+    }
+}
+
+class Dog extends Animal {
+    void sound() {
+        System.out.println("Dog barks");
+    }
+    void fetch() {
+        System.out.println("Dog is fetching the ball");
+    }
+}
+
+public class Test {
+    public static void main(String[] args) {
+        // Upcasting (child → parent)
+        Animal a = new Dog(); // Implicit
+        a.sound(); // Dog barks (runtime polymorphism)
+
+        // Downcasting (parent → child)
+        Dog d = (Dog) a; // Explicit
+        d.fetch(); // Dog is fetching the ball
+
+        // Invalid downcast (dangerous)
+        Animal a2 = new Animal();
+        Dog d2 = (Dog) a2; // ❌ ClassCastException at runtime
+    }
+}
+
+8) Object Class Methods:
+- equals(), hashCode(), toString(), clone(), finalize().
+
+9) Inner Classes:
+- Member Inner Class
+- Static Nested Class
+- Local Inner Class
+- Anonymous Inner Class
+
+10) Aggregation & Composition:
+- Aggregation: HAS-A relationship with weaker association.
+- Composition: Strong HAS-A relationship where child cannot exist without parent.
+
+
+
+1️⃣ Inheritance (is-a relationship)
+
+A class inherits properties & behavior of another class using extends.
+
+Represents an “is-a” relationship.
+
+Example: A Dog is an Animal.
+
+class Animal {
+    void eat() {
+        System.out.println("Animal eats food");
+    }
+}
+
+class Dog extends Animal {  // Dog IS-A Animal
+    void bark() {
+        System.out.println("Dog barks");
+    }
+}
+
+public class TestInheritance {
+    public static void main(String[] args) {
+        Dog d = new Dog();
+        d.eat();  // inherited from Animal
+        d.bark(); // Dog's own method
+    }
+}
+
+
+2️⃣ Composition (has-a relationship)
+
+A class contains an object of another class.
+
+Represents a “has-a” relationship.
+
+Example: A Car has an Engine.
+
+class Engine {
+    void start() {
+        System.out.println("Engine starts...");
+    }
+}
+
+class Car {  // Car HAS-A Engine
+    private Engine engine;
+
+    Car() {
+        this.engine = new Engine(); // composition
+    }
+
+    void drive() {
+        engine.start();
+        System.out.println("Car is driving...");
+    }
+}
+
+public class TestComposition {
+    public static void main(String[] args) {
+        Car car = new Car();
+        car.drive();
+    }
+}
+Key Difference:
+
+Inheritance → Strongly coupled, child automatically gets all parent behavior.
+
+Composition → More flexible, lets you build complex behavior by combining smaller classes.
+---------------------------------------------------------
+END OF OOP NOTES

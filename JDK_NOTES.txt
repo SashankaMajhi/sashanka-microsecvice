@@ -1,0 +1,219 @@
+Java Overview
+
+Java is one of the most powerful programming languages used to develop different types of software applications.
+
+
+The main part of Java is the JDK (Java Development Kit).
+
+JDK (Java Development Kit)
+
+Definition:
+JDK is a software development environment that provides all the tools, libraries, and components required to develop and run Java applications.
+
+It consists of:
+
+JRE (Java Runtime Environment)
+
+JVM (Java Virtual Machine)
+
+Necessary libraries, jars, and development tools (like javac, java, javadoc, etc.).
+
+Compilation Process
+
+Whenever we write Java code, it first goes through the Compiler.
+
+Compiler (part of JDK): Takes Java source code (.java) as input and generates Bytecode (.class).
+
+Inside the compiler, two main things happen:
+
+Syntax Checking → Verifies whether the code is written correctly or contains errors.
+
+Semantic Analysis → Checks the meaning of code and ensures libraries/methods are correctly used.
+
+String s = "Broski";
+int len = s.size();  // ❌ "size()" method doesn’t exist for String
+
+
+Execution Process
+
+To run this Bytecode and convert it to machine-native code (which the CPU understands), we need:
+
+JRE (Java Runtime Environment): Provides required jars, class libraries, and runtime environment.
+
+JVM (Java Virtual Machine): Converts bytecode to machine-native code.
+
+JVM Internals
+
+Inside JVM, the following steps happen to execute bytecode:
+
+Class Loader
+
+JVM Memory Areas
+
+Interpreter
+
+JIT (Just-In-Time Compiler)
+
+Class Loader
+
+Definition:
+Class Loader is a part of JVM which loads .class files into memory. It follows the Parent Delegation Model, meaning it first asks the parent loader before loading a class.
+
+Types of Class Loaders:
+
+Bootstrap Class Loader → Loads core classes from JAVA_HOME/jre/lib/*.jar.
+
+Extension Class Loader → Loads classes from JAVA_HOME/jre/lib/ext folder.
+
+Application Class Loader → Loads application-level classes from the classpath.
+
+Bytecode Verification → verifier checks safety & validity.
+
+JVM Memory
+
+JVM memory is divided into:
+
+Method Area → Stores class structure, method data, static variables. So when ClassLoader loads your .class, the info about that class goes here.
+
+Method Area (a.k.a. Metaspace in Java 8+)
+
+Stores class metadata, method code, static variables, constant pool.
+
+Loaded once per class by the ClassLoader.
+
+Heap Area → Stores objects created using new. (But the definition of the class came from the Method Area)
+
+Example: Class c = new Class(); → object stored in Heap.
+
+Garbage Collector (GC) cleans unused objects.
+
+
+Garbage Collector (GC) → not immediately. It runs automatically but only when JVM decides memory pressure needs cleanup.
+
+❌ GC does not run right after new.
+
+❌ GC does not run immediately after ClassLoader, interpreter, or JIT.
+
+✅ GC runs later, on demand when:
+
+Heap is filling up.
+
+An object has no live references (unreachable).
+
+JVM heuristics decide it’s a good time.
+
+
+public class GCDemo {
+    public static void main(String[] args) {
+        String s1 = new String("broski"); // object in heap
+        s1 = null; // eligible for GC, but not collected yet!
+
+        System.gc(); // just a *request*, JVM may or may not run GC now
+        System.out.println("End of program");
+    }
+}
+Here s1 becomes unreachable after s1 = null.
+
+It’s eligible for GC but JVM decides when to actually collect it.
+
+GC is not tied to ClassLoader, Interpreter, JIT, or new. It runs automatically when JVM feels memory cleanup is needed
+ (or sometimes when you explicitly hint with System.gc()).
+
+********Garbage Collector is not a separate memory area, but a process running on Heap.*******
+
+Stack Area → Stores method calls, local variables, and object references. 👉 Each thread gets its own stack. Stores method calls, local variables, etc.
+
+Example: c (reference) is stored in Stack.
+
+PC Registers → Stores address of current executing instruction. PC register tracks which instruction a thread is running.
+
+🖥️ PC Register (Program Counter)
+
+What it does: Keeps track of which line/instruction of your program is being executed right now.
+
+Each thread has its own PC Register.
+
+✅ Example:
+
+int a = 10;
+int b = 20;
+int c = a + b;  // <-- PC Register points here while executing
+
+
+When the JVM is running c = a + b;, the PC Register is pointing to that instruction. Next, it moves to the next line.
+
+Native Method Stack → Stores native (non-Java) method information.
+
+What it does: Stores info when Java calls non-Java (native) methods, like C/C++ functions through JNI(Java Native Interface).
+
+✅ Example:
+
+public class Demo {
+    public native void sayHello(); // native method
+    static {
+        System.loadLibrary("hello"); // loads C library
+    }
+}
+
+
+Here sayHello() is not written in Java but in C. When JVM calls it, the Native Method Stack handles its execution.
+
+✔ ClassLoader loads the class into the Method Area (Metaspace in Java 8+),
+not directly into Heap.
+Heap only comes into play when objects of that class are created.
+
+Execution Engines
+
+Interpreter
+
+Converts bytecode to machine code line by line (slow).
+
+JIT (Just-In-Time Compiler)
+
+Optimizes performance.
+
+If a method is called repeatedly, JIT stores its compiled code in cache so that Interpreter doesn’t need to re-convert it.
+Next time → runs directly as native, no interpretation needed.
+
+The Interpreter doesn’t “run inside another component” — it is part of the Execution Engine, and it executes bytecode directly on the CPU by translating line by line into native instructions.
+
+The JIT Compiler also belongs to the Execution Engine and works together with the Interpreter to optimize.
+
+✅ So to your question:
+👉 Interpreter’s machine code runs directly on the CPU.
+The Execution Engine (which contains Interpreter + JIT) is the component that manages this process.
+
+
+
+
+
+✅ Java Class Library (JCL)
+
+JCL is the standard library of Java classes (like java.lang, java.util, java.io, etc.) that provides pre-built functionality. 
+It’s essential because it makes Java applications portable, productive, and standardized across platforms.
+
+Foundation of Java programs → every Java app depends on JCL (e.g., java.lang.String, java.util.List).
+
+Portability → provides a consistent API across platforms.
+
+Productivity → speeds up development by reusing tested, optimized classes.
+
+Integration → works with JVM to provide higher-level functionality beyond raw bytecode execution.
+
+The Java Class Library comes with the JRE, and since JDK includes JRE, you always get JCL when you install JDK.”
+
+Java language is platform independent.
+
+JVM is still platform dependent (even after Java 11).
+
+The only change from Java 11: JRE is no longer given separately; JDK bundles everything.
+
+💡 Think of it like this:
+
+Your .class file is like a movie DVD.
+
+JVM is like a DVD player. Each country has its own DVD player (110V in US, 220V in India). The DVD (bytecode) works everywhere, but you need the right player (JVM for your OS).
+
+From Java 11, they just sell only a combo pack (JDK) instead of separate player + accessories.
+
+
